@@ -20,7 +20,9 @@ public class OFYGame : ModuleRules
 				"Core",
 				"CoreUObject", 
 				"Engine", 
-				"InputCore"
+				"InputCore",
+				"ModularGameplay",
+				"ModularGameplayActors"
 			});
 
 		PrivateDependencyModuleNames.AddRange(
