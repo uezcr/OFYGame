@@ -8,6 +8,7 @@ DerivedDataCache/
 Binaries/
 Build/
 Developers/
+Plugins/Developer/
 *_BuiltData.uasset
 
 # Compiled Object files
