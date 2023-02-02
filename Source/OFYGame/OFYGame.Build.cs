@@ -19,8 +19,10 @@ public class OFYGame : ModuleRules
 			{
 				"Core",
 				"CoreUObject", 
-				"Engine", 
-				"InputCore",
+				"Engine",
+				"GameplayTags",
+                "GameplayTasks",
+                "GameplayAbilities",
 				"ModularGameplay",
 				"ModularGameplayActors"
 			});
@@ -28,7 +30,11 @@ public class OFYGame : ModuleRules
 		PrivateDependencyModuleNames.AddRange(
 			new string[]
 			{
-				
+				"InputCore",
+				"Slate",
+				"SlateCore",
+				"UMG",
+				"CommonUI"
 			});
 
 		// Uncomment if you are using Slate UI
