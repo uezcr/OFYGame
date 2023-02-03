@@ -35,7 +35,10 @@ public class OFYGame : ModuleRules
 				"Slate",
 				"SlateCore",
 				"UMG",
-				"CommonUI"
+				"CommonUI",
+				"CommonGame",
+				"CommonUser",
+				"UIExtension"
 			});
 
 		// Uncomment if you are using Slate UI

@@ -10,7 +10,7 @@
 #include "Engine/World.h"
 #include "GameFeaturesSubsystem.h"
 
-
+#include UE_INLINE_GENERATED_CPP_BY_NAME(GFAction_WorldActionBase)
 
 void UGFAction_WorldActionBase::OnGameFeatureActivating(FGameFeatureActivatingContext& Context)
 {

@@ -20,7 +20,7 @@ struct FGameFeatureStateChangeContext;
 struct FWorldContext;
 
 UCLASS(Abstract)
-class OFYGAME_API UGFAction_WorldActionBase : public UGameFeatureAction
+class UGFAction_WorldActionBase : public UGameFeatureAction
 {
 	GENERATED_BODY()
 public:

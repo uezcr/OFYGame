@@ -3,6 +3,10 @@
 
 #include "UI/OFYActivatableWidget.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(OFYActivatableWidget)
+
+#define LOCTEXT_NAMESPACE "OFY"
+
 UOFYActivatableWidget::UOFYActivatableWidget(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
