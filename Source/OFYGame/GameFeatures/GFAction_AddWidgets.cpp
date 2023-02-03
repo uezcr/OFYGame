@@ -33,7 +33,7 @@ void UGFAction_AddWidgets::AddToWorld(const FWorldContext& WorldContext,
 	if ((GameInstance != nullptr) && (World != nullptr) && World->IsGameWorld())
 	{
 		if (UGameFrameworkComponentManager* ComponentManager = UGameInstance::GetSubsystem<UGameFrameworkComponentManager>(GameInstance))
-		{			
+		{
 			TSoftClassPtr<AActor> HUDActorClass = AOFYHUD::StaticClass();
 
 			TSharedPtr<FComponentRequestHandle> ExtensionRequestHandle = ComponentManager->AddExtensionHandler(
@@ -73,7 +73,6 @@ void UGFAction_AddWidgets::HandleActorExtension(AActor* Actor, FName EventName,
 void UGFAction_AddWidgets::AddWidgets(AActor* Actor, FPerContextData& ActiveData)
 {
 	AOFYHUD* HUD = CastChecked<AOFYHUD>(Actor);
-
 	if (ULocalPlayer* LocalPlayer = Cast<ULocalPlayer>(HUD->GetOwningPlayerController()->Player))
 	{
 		for (const FOFYHUDLayoutRequest& Entry : Layout)
@@ -83,7 +82,6 @@ void UGFAction_AddWidgets::AddWidgets(AActor* Actor, FPerContextData& ActiveData
 				ActiveData.LayoutsAdded.Add(UCommonUIExtensions::PushContentToLayer_ForPlayer(LocalPlayer, Entry.LayerID, ConcreteWidgetClass));
 			}
 		}
-
 		UUIExtensionSubsystem* ExtensionSubsystem = HUD->GetWorld()->GetSubsystem<UUIExtensionSubsystem>();
 		for (const FOFYHUDElementEntry& Entry : Widgets)
 		{
