@@ -25,7 +25,8 @@ public class OFYGame : ModuleRules
                 "GameplayAbilities",
 				"ModularGameplay",
 				"ModularGameplayActors",
-				"GameFeatures"
+				"GameFeatures",
+				"CommonLoadingScreen"
 			});
 
 		PrivateDependencyModuleNames.AddRange(

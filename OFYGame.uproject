@@ -12,7 +12,8 @@
 				"ModularGameplayActors",
 				"CommonUI",
 				"Engine",
-				"GameFeatures"
+				"GameFeatures",
+				"ModularGameplay"
 			]
 		}
 	],
@@ -40,7 +41,7 @@
 			"Name": "OFYCoreGame",
 			"Enabled": true
 		},
-                                {
+		{
 			"Name": "CommonUI",
 			"Enabled": true
 		},
