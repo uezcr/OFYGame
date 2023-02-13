@@ -45,27 +45,28 @@ public:
 	void ServerSetCurrentExperience(FPrimaryAssetId ExperienceId);
 #endif
 
-	// Ensures the delegate is called once the experience has been loaded,
-	// before others are called.
-	// However, if the experience has already loaded, calls the delegate immediately.
+	// 确保一旦ExperienceDefinition被加载，就会调用该委托。
+	// 在其他的被调用之前，最先调用该委托
+	// 然而，如果ExperienceDefinition已经被加载，则立即调用该委托
 	void CallOrRegister_OnExperienceLoaded_HighPriority(FOnOFYExperienceLoaded::FDelegate&& Delegate);
 
-	// Ensures the delegate is called once the experience has been loaded
-	// If the experience has already loaded, calls the delegate immediately
+	// 确保一旦ExperienceDefinition被加载，就会调用该委托。
+	// 如果ExperienceDefinition已经被加载，则立即调用该委托
 	void CallOrRegister_OnExperienceLoaded(FOnOFYExperienceLoaded::FDelegate&& Delegate);
 
-	// Ensures the delegate is called once the experience has been loaded
-	// If the experience has already loaded, calls the delegate immediately
+	// 确保一旦ExperienceDefinition被加载，就会调用该委托。
+	// 如果ExperienceDefinition已经被加载，则立即调用该委托
 	void CallOrRegister_OnExperienceLoaded_LowPriority(FOnOFYExperienceLoaded::FDelegate&& Delegate);
 
-	// This returns the current experience if it is fully loaded, asserting otherwise
-	// (i.e., if you called it too soon)
+	// 返回当前的ExperienceDefinition如果它已经完全加载了，否则断言
+	// （即，如果你过早地调用它）。
 	const UOFYExperienceDefinition* GetCurrentExperienceChecked() const;
 
-	// Returns true if the experience is fully loaded
+	// 如果ExperienceDefinition被完全加载，返回true
 	bool IsExperienceLoaded() const;
 
 private:
+	//该函数很重要，在GameMode初始化或其他地方修改ExperienceDefinition调用该函数，利用的是RPC函数的性质
 	UFUNCTION()
 	void OnRep_CurrentExperience();
 
@@ -78,11 +79,14 @@ private:
 	void OnAllActionsDeactivated();
 
 private:
+	//当前ExperienceDefinition
 	UPROPERTY(ReplicatedUsing=OnRep_CurrentExperience)
 	TObjectPtr<const UOFYExperienceDefinition> CurrentExperience;
 
+	//加载状态
 	EOFYExperienceLoadState LoadState = EOFYExperienceLoadState::Unloaded;
 
+	//GameFeaturePlugins加载数量
 	int32 NumGameFeaturePluginsLoading = 0;
 	TArray<FString> GameFeaturePluginURLs;
 

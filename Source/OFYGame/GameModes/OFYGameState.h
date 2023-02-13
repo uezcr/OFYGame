@@ -13,7 +13,7 @@ class UOFYExperienceManagerComponent;
 class UObject;
 
 /**
- * 
+ * 添加了ExperienceManager组件的GameState
  */
 UCLASS(Config=Game)
 class AOFYGameState : public AModularGameStateBase

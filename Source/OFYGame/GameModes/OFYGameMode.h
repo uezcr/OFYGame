@@ -22,7 +22,11 @@ public:
 
 
 protected:
+
+	//根据获取到的ExperienceDefinition的PrimaryAssetID加载ExperienceDefinition
 	void OnMatchAssignmentGiven(FPrimaryAssetId ExperienceId, const FString& ExperienceIdSource);
+	
+	//获取ExperienceDefinition的PrimaryAssetID
 	void HandleMatchAssignmentIfNotExpectingOne();
 	
 };

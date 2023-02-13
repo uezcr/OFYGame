@@ -199,8 +199,10 @@ void UOFYExperienceManagerComponent::StartExperienceLoad()
 	check(CurrentExperience != nullptr);
 	check(LoadState == EOFYExperienceLoadState::Unloaded);
 
-	LoadState = EOFYExperienceLoadState::Loaded;
+	LoadState = EOFYExperienceLoadState::Loading;
+	
 	UOFYAssetManager& AssetManager = UOFYAssetManager::Get();
+	
 	TSet<FPrimaryAssetId> BundleAssetList;
 	TSet<FSoftObjectPath> RawAssetList;
 

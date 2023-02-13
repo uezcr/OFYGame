@@ -15,7 +15,8 @@ AOFYGameState::AOFYGameState(const FObjectInitializer& ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
-
+	
+	//创建组件
 	ExperienceManagerComponent = CreateDefaultSubobject<UOFYExperienceManagerComponent>(TEXT("ExperienceManagerComponent"));
 	
 }

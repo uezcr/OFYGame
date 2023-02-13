@@ -9,7 +9,7 @@
 class UOFYExperienceDefinition;
 
 /**
- * 
+ * 添加了ExperienceDefinition信息的世界设置
  */
 UCLASS()
 class OFYGAME_API AOFYWorldSettings : public AWorldSettings
@@ -18,9 +18,13 @@ class OFYGAME_API AOFYWorldSettings : public AWorldSettings
 public:
 	AOFYWorldSettings(const FObjectInitializer& ObjectInitializer);
 public:
+
+	//返回默认Experience
 	FPrimaryAssetId GetDefaultGameplayExperience() const;
 
 protected:
+
+	//当服务器打开该地图时，如果没有被user-facing所覆盖，则使用的默认Experience
 	UPROPERTY(EditAnywhere,Category=GameMode)
 	TSoftClassPtr<UOFYExperienceDefinition> DefaultGameplayExperience;
 
