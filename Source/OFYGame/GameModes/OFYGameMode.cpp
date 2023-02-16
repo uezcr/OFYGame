@@ -9,11 +9,13 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameModes/OFYExperienceDefinition.h"
 #include "System/OFYAssetManager.h"
+#include "UI/OFYHUD.h"
 
 AOFYGameMode::AOFYGameMode(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
 	GameStateClass = AOFYGameState::StaticClass();
+	HUDClass = AOFYHUD::StaticClass();
 }
 
 void AOFYGameMode::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
