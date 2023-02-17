@@ -67,11 +67,11 @@ UCommonActivatableWidget* UCommonUIExtensions::PushContentToLayer_ForPlayer(cons
 	//	//UE_LOG ERROR
 	//	return nullptr;
 	//}
-
 	if (UGameUIManagerSubsystem* UIManager = LocalPlayer->GetGameInstance()->GetSubsystem<UGameUIManagerSubsystem>())
 	{
 		if (UGameUIPolicy* Policy = UIManager->GetCurrentUIPolicy())
 		{
+			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Cyan,TEXT("111111111111111"));
 			if (UPrimaryGameLayout* RootLayout = Policy->GetRootLayout(CastChecked<UCommonLocalPlayer>(LocalPlayer)))
 			{
 				return RootLayout->PushWidgetToLayerStack(LayerName, WidgetClass);

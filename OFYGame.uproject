@@ -13,7 +13,8 @@
 				"CommonUI",
 				"Engine",
 				"GameFeatures",
-				"ModularGameplay"
+				"ModularGameplay",
+				"CommonGame"
 			]
 		}
 	],
