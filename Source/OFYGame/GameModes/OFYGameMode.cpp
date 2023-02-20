@@ -8,6 +8,7 @@
 #include "OFYWorldSettings.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameModes/OFYExperienceDefinition.h"
+#include "Player/OFYPlayerController.h"
 #include "System/OFYAssetManager.h"
 #include "UI/OFYHUD.h"
 
@@ -15,6 +16,7 @@ AOFYGameMode::AOFYGameMode(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
 	GameStateClass = AOFYGameState::StaticClass();
+	PlayerControllerClass = AOFYPlayerController::StaticClass();
 	HUDClass = AOFYHUD::StaticClass();
 }
 

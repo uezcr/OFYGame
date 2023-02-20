@@ -71,7 +71,6 @@ UCommonActivatableWidget* UCommonUIExtensions::PushContentToLayer_ForPlayer(cons
 	{
 		if (UGameUIPolicy* Policy = UIManager->GetCurrentUIPolicy())
 		{
-			GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Cyan,TEXT("111111111111111"));
 			if (UPrimaryGameLayout* RootLayout = Policy->GetRootLayout(CastChecked<UCommonLocalPlayer>(LocalPlayer)))
 			{
 				return RootLayout->PushWidgetToLayerStack(LayerName, WidgetClass);
