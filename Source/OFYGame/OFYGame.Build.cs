@@ -35,11 +35,13 @@ public class OFYGame : ModuleRules
 				"InputCore",
 				"Slate",
 				"SlateCore",
+				"EnhancedInput",
 				"UMG",
 				"CommonUI",
 				"CommonGame",
 				"CommonUser",
-				"UIExtension"
+				"UIExtension",
+				"GameSubtitles"
 			});
 
 		// Uncomment if you are using Slate UI
