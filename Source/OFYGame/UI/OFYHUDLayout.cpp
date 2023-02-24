@@ -24,7 +24,6 @@ UOFYHUDLayout::UOFYHUDLayout(const FObjectInitializer& ObjectInitializer)
 void UOFYHUDLayout::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
-	GEngine->AddOnScreenDebugMessage(-1,10.f,FColor::Cyan,TEXT("NativeOnInitialized"));
 	RegisterUIActionBinding(FBindUIActionArgs(
 		FUIActionTag::ConvertChecked(TAG_UI_ACTION_ESCAPE),
 		false,
@@ -33,7 +32,6 @@ void UOFYHUDLayout::NativeOnInitialized()
 
 void UOFYHUDLayout::HandleEscapeAction()
 {
-	GEngine->AddOnScreenDebugMessage(-1,10.f,FColor::Cyan,TEXT("HandleEsc"));
 	if(ensure(!EscapeMenuClass.IsNull()))
 	{
 		UCommonUIExtensions::PushStreamedContentToLayer_ForPlayer(GetOwningLocalPlayer(), TAG_UI_LAYER_MENU, EscapeMenuClass);
