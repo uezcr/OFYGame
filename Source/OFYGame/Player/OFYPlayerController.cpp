@@ -3,3 +3,10 @@
 
 #include "Player/OFYPlayerController.h"
 
+#include "Camera/OFYPlayerCameraManager.h"
+
+AOFYPlayerController::AOFYPlayerController(const FObjectInitializer& ObjectInitializer)
+	:Super(ObjectInitializer)
+{
+	PlayerCameraManagerClass = AOFYPlayerCameraManager::StaticClass();
+}

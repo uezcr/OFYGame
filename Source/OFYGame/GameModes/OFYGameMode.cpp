@@ -6,9 +6,11 @@
 #include "OFYExperienceManagerComponent.h"
 #include "OFYGameState.h"
 #include "OFYWorldSettings.h"
+#include "Character/OFYCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameModes/OFYExperienceDefinition.h"
 #include "Player/OFYPlayerController.h"
+#include "Player/OFYPlayerState.h"
 #include "System/OFYAssetManager.h"
 #include "UI/OFYHUD.h"
 
@@ -17,7 +19,44 @@ AOFYGameMode::AOFYGameMode(const FObjectInitializer& ObjectInitializer)
 {
 	GameStateClass = AOFYGameState::StaticClass();
 	PlayerControllerClass = AOFYPlayerController::StaticClass();
+	PlayerStateClass = AOFYPlayerState::StaticClass();
+	DefaultPawnClass = AOFYCharacter::StaticClass();
 	HUDClass = AOFYHUD::StaticClass();
+}
+
+const UOFYPawnData* AOFYGameMode::GetPawnDataForController(const AController* InController) const
+{
+	//看Pawn的数据是否已经在PlayerState上设置了
+	if (InController != nullptr)
+	{
+		if (const AOFYPlayerState* LyraPS = InController->GetPlayerState<AOFYPlayerState>())
+		{
+			if (const UOFYPawnData* PawnData = LyraPS->GetPawnData<UOFYPawnData>())
+			{
+				return PawnData;
+			}
+		}
+	}
+
+	// 如果没有，就回到当前Experience的默认值。
+	check(GameState);
+	UOFYExperienceManagerComponent* ExperienceComponent = GameState->FindComponentByClass<UOFYExperienceManagerComponent>();
+	check(ExperienceComponent);
+
+	if (ExperienceComponent->IsExperienceLoaded())
+	{
+		const UOFYExperienceDefinition* Experience = ExperienceComponent->GetCurrentExperienceChecked();
+		if (Experience->DefaultPawnData != nullptr)
+		{
+			return Experience->DefaultPawnData;
+		}
+
+		// Experience已经加载，但仍然没有Pawn的数据，暂时退回到默认状态。
+		return UOFYAssetManager::Get().GetDefaultPawnData();
+	}
+
+	// Experience经验还没有加载，所以没有Pawn的数据可言
+	return nullptr;
 }
 
 void AOFYGameMode::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)

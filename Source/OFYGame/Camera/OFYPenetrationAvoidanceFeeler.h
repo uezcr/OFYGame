@@ -5,34 +5,34 @@
 #include "OFYPenetrationAvoidanceFeeler.generated.h"
 
 /**
- * Struct defining a feeler ray used for camera penetration avoidance.
+ * 定义一个用于避免相机穿透的感应射线的结构。
  */
 USTRUCT()
 struct FOFYPenetrationAvoidanceFeeler
 {
 	GENERATED_BODY()
 
-	/** FRotator describing deviance from main ray */
+	/**描述偏离主射线的FRotator */
 	UPROPERTY(EditAnywhere, Category=PenetrationAvoidanceFeeler)
 	FRotator AdjustmentRot;
 
-	/** how much this feeler affects the final position if it hits the world */
+	/**这个感觉器对最终位置的影响有多大，如果它击中了世界 */
 	UPROPERTY(EditAnywhere, Category=PenetrationAvoidanceFeeler)
 	float WorldWeight;
 
-	/** how much this feeler affects the final position if it hits a APawn (setting to 0 will not attempt to collide with pawns at all) */
+	/**如果它撞上了一个Pawn，这个感觉器对最终位置的影响程度（设置为0将完全不尝试与Pawn相撞） */
 	UPROPERTY(EditAnywhere, Category=PenetrationAvoidanceFeeler)
 	float PawnWeight;
 
-	/** extent to use for collision when tracing this feeler */
+	/**追踪这个感觉器时用于碰撞的范围 */
 	UPROPERTY(EditAnywhere, Category=PenetrationAvoidanceFeeler)
 	float Extent;
 
-	/** minimum frame interval between traces with this feeler if nothing was hit last frame */
+	/**如果上一帧没有击中任何东西，则用该感觉器进行追踪的最小帧间隔 */
 	UPROPERTY(EditAnywhere, Category=PenetrationAvoidanceFeeler)
 	int32 TraceInterval;
 
-	/** number of frames since this feeler was used */
+	/**使用该感觉器后的帧数 */
 	UPROPERTY(transient)
 	int32 FramesUntilNextTrace;
 

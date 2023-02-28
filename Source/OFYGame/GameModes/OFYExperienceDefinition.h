@@ -6,6 +6,7 @@
 #include "Engine/DataAsset.h"
 #include "OFYExperienceDefinition.generated.h"
 
+class UOFYPawnData;
 class UGameFeatureAction;
 class UOFYExperienceActionSet;
 
@@ -23,7 +24,8 @@ public:
 	UPROPERTY(EditDefaultsOnly,Category = Gameplay)
 	TArray<FString> GameFeaturesToEnable;
 
-	//ToDo CreatePawnData
+	UPROPERTY(EditDefaultsOnly, Category=Gameplay)
+	TObjectPtr<const UOFYPawnData> DefaultPawnData;
 
 	UPROPERTY(EditDefaultsOnly, Instanced, Category="Actions")
 	TArray<TObjectPtr<UGameFeatureAction>> Actions;

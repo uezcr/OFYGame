@@ -13,5 +13,7 @@ UCLASS()
 class OFYGAME_API AOFYPlayerController : public ACommonPlayerController
 {
 	GENERATED_BODY()
+public:
+	AOFYPlayerController(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 	
 };

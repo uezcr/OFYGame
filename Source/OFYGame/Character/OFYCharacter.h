@@ -8,7 +8,8 @@
 class AActor;
 class AController;
 class AOFYPlayerController;
-class UCameraComponent;
+class UOFYCameraComponent;
+class UOFYPawnExtensionComponent;
 
 /**
  * 
@@ -25,7 +26,10 @@ public:
 
 
 private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Lyra|Character", Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UOFYPawnExtensionComponent> PawnExtComponent;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly,Category="OFY|Character",Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UCameraComponent> CameraComponent;
+	TObjectPtr<UOFYCameraComponent> CameraComponent;
 	
 };
