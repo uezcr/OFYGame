@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/AssetManager.h"
+#include "Engine/DataAsset.h"
 #include "OFYAssetManager.generated.h"
 
 class UOFYPawnData;

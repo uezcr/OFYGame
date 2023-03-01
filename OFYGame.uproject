@@ -14,7 +14,8 @@
 				"Engine",
 				"GameFeatures",
 				"ModularGameplay",
-				"CommonGame"
+				"CommonGame",
+				"EnhancedInput"
 			]
 		}
 	],

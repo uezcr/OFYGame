@@ -5,6 +5,7 @@
 
 #include "OFYPawnExtensionComponent.h"
 #include "Camera/OFYCameraComponent.h"
+#include "GameFramework/PlayerState.h"
 #include "Player/OFYPlayerController.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(OFYCharacter)
@@ -25,4 +26,11 @@ AOFYPlayerController* AOFYCharacter::GetOFYPlayerController() const
 {
 	return CastChecked<AOFYPlayerController>(Controller,ECastCheckedType::NullAllowed);
 }
+
+void AOFYCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	PawnExtComponent->HandleControllerChanged();
+}
+
 

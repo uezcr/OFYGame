@@ -41,6 +41,9 @@ public:
 	/** Sets the current pawn data */
 	void SetPawnData(const UOFYPawnData* InPawnData);
 
+	/** Should be called by the owning pawn when the pawn's controller changes. */
+	void HandleControllerChanged();
+
 protected:
 	virtual void OnRegister() override;
 	virtual void BeginPlay() override;

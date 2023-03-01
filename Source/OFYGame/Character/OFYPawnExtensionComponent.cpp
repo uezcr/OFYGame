@@ -85,6 +85,11 @@ void UOFYPawnExtensionComponent::SetPawnData(const UOFYPawnData* InPawnData)
 	CheckDefaultInitialization();
 }
 
+void UOFYPawnExtensionComponent::HandleControllerChanged()
+{
+	CheckDefaultInitialization();
+}
+
 void UOFYPawnExtensionComponent::OnRep_PawnData()
 {
 	CheckDefaultInitialization();
@@ -97,7 +102,6 @@ bool UOFYPawnExtensionComponent::CanChangeInitState(UGameFrameworkComponentManag
 
 	APawn* Pawn = GetPawn<APawn>();
 	const FOFYGameplayTags& InitTags = FOFYGameplayTags::Get();
-
 	if (!CurrentState.IsValid() && DesiredState == InitTags.InitState_Spawned)
 	{
 		// As long as we are on a valid pawn, we count as spawned

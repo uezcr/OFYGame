@@ -30,7 +30,7 @@ class OFYGAME_API AOFYGameMode : public AModularGameModeBase
 public:
 	AOFYGameMode(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-	UFUNCTION(BlueprintCallable, Category = "Lyra|Pawn")
+	UFUNCTION(BlueprintCallable, Category = "OFY|Pawn")
 	const UOFYPawnData* GetPawnDataForController(const AController* InController) const;
 	
 	//~AGameModeBase interface

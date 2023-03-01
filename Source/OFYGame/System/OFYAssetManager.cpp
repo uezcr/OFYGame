@@ -1,9 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "System/OFYAssetManager.h"
+#include "OFYAssetManager.h"
 
+#include "Engine/Engine.h"
+#include "Character/OFYPawnData.h"
 #include "Misc/ScopedSlowTask.h"
+#include "Stats/StatsMisc.h"
 
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(OFYAssetManager)
@@ -29,6 +32,7 @@ static FAutoConsoleCommand CVarDumpLoadedAssets(
 
 UOFYAssetManager::UOFYAssetManager()
 {
+	DefaultPawnData = nullptr;
 }
 
 UOFYAssetManager& UOFYAssetManager::Get()

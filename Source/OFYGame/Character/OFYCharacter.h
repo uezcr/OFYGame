@@ -24,6 +24,8 @@ public:
 	UFUNCTION(BlueprintCallable,Category= "OFY|Character")
 	AOFYPlayerController* GetOFYPlayerController() const;
 
+protected:
+	virtual void PossessedBy(AController* NewController) override;
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Lyra|Character", Meta = (AllowPrivateAccess = "true"))

@@ -136,15 +136,14 @@ void UOFYHeroComponent::HandleChangeInitState(UGameFrameworkComponentManager* Ma
 	if (CurrentState == FOFYGameplayTags::Get().InitState_DataAvailable && DesiredState == FOFYGameplayTags::Get().InitState_DataInitialized)
 	{
 		APawn* Pawn = GetPawn<APawn>();
-		AOFYPlayerState* LyraPS = GetPlayerState<AOFYPlayerState>();
-		if (!ensure(Pawn && LyraPS))
+		AOFYPlayerState* OFYPS = GetPlayerState<AOFYPlayerState>();
+		if (!ensure(Pawn && OFYPS))
 		{
 			return;
 		}
-
 		const bool bIsLocallyControlled = Pawn->IsLocallyControlled();
 		const UOFYPawnData* PawnData = nullptr;
-
+		
 		if (UOFYPawnExtensionComponent* PawnExtComp = UOFYPawnExtensionComponent::FindPawnExtensionComponent(Pawn))
 		{
 			PawnData = PawnExtComp->GetPawnData<UOFYPawnData>();
@@ -161,7 +160,6 @@ void UOFYHeroComponent::HandleChangeInitState(UGameFrameworkComponentManager* Ma
 				//TODO InitializePlayerInput(Pawn->InputComponent);
 			}
 		}
-
 		if (bIsLocallyControlled && PawnData)
 		{
 			if (UOFYCameraComponent* CameraComponent = UOFYCameraComponent::FindCameraComponent(Pawn))
@@ -186,7 +184,11 @@ void UOFYHeroComponent::OnActorInitStateChanged(const FActorInitStateChangedPara
 
 void UOFYHeroComponent::CheckDefaultInitialization()
 {
-	IGameFrameworkInitStateInterface::CheckDefaultInitialization();
+	const FOFYGameplayTags& InitTags = FOFYGameplayTags::Get();
+	static const TArray<FGameplayTag> StateChain = { InitTags.InitState_Spawned, InitTags.InitState_DataAvailable, InitTags.InitState_DataInitialized, InitTags.InitState_GameplayReady };
+
+	// This will try to progress from spawned (which is only set in BeginPlay) through the data initialization stages until it gets to gameplay ready
+	ContinueInitStateChain(StateChain);
 }
 
 

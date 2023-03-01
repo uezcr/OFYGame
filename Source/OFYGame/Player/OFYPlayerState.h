@@ -11,10 +11,13 @@ class UOFYPawnData;
 /**
  * 
  */
-UCLASS()
+UCLASS(Config = Game)
 class OFYGAME_API AOFYPlayerState : public AModularPlayerState
 {
 	GENERATED_BODY()
+
+public:
+	AOFYPlayerState(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 public:
 	template <class T>
