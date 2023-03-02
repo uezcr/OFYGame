@@ -9,6 +9,7 @@
 #include "Camera/OFYCameraComponent.h"
 #include "Camera/OFYCameraMode.h"
 #include "Components/GameFrameworkComponentManager.h"
+#include "Input/OFYInputComponent.h"
 #include "Misc/UObjectToken.h"
 #include "Player/OFYPlayerController.h"
 #include "Player/OFYPlayerState.h"
@@ -27,6 +28,40 @@ UOFYHeroComponent::UOFYHeroComponent(const FObjectInitializer& ObjectInitializer
 	:Super(ObjectInitializer)
 {
 	AbilityCameraMode = nullptr;
+}
+
+void UOFYHeroComponent::AddAdditionalInputConfig(const UOFYInputConfig* InputConfig)
+{
+	TArray<uint32> BindHandles;
+
+	const APawn* Pawn = GetPawn<APawn>();
+	if(!Pawn)
+	{
+		return;
+	}
+	UOFYInputComponent* OFYIC = Pawn->FindComponentByClass<UOFYInputComponent>();
+	check(OFYIC);
+
+	const APlayerController* PC = GetController<APlayerController>();
+	check(PC);
+	
+	const ULocalPlayer* LP = PC->GetLocalPlayer();
+	check(LP);
+
+	if(const UOFYPawnExtensionComponent* PawnExtensionCom = UOFYPawnExtensionComponent::FindPawnExtensionComponent(Pawn))
+	{
+		//TODO BindAbilityActions()
+	}
+}
+
+void UOFYHeroComponent::RemoveAdditionalInputConfig(const UOFYInputConfig* InputConfig)
+{
+	//TODO
+}
+
+bool UOFYHeroComponent::IsReadyToBindInputs() const
+{
+	return bReadyToBindInputs;
 }
 
 void UOFYHeroComponent::OnRegister()

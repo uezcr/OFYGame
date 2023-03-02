@@ -13,6 +13,7 @@
 class APawn;
 class UOFYCameraMode;
 class UObject;
+class UOFYInputConfig;
 
 /**
  * 
@@ -28,7 +29,11 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "OFY|Pawn")
 	TSubclassOf<APawn> PawnClass;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Lyra|Camera")
+	// Input configuration used by player controlled pawns to create input mappings and bind input actions.
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "OFY|Input")
+	TObjectPtr<UOFYInputConfig> InputConfig;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "OFY|Camera")
 	TSubclassOf<UOFYCameraMode> DefaultCameraMode;
 	
 };

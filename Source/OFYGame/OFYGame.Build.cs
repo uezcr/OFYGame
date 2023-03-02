@@ -38,6 +38,7 @@ public class OFYGame : ModuleRules
 				"EnhancedInput",
 				"UMG",
 				"CommonUI",
+				"CommonInput",
 				"CommonGame",
 				"CommonUser",
 				"UIExtension",
