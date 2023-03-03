@@ -17,6 +17,7 @@
 
 class UOFYCameraMode;
 class UOFYInputConfig;
+struct FInputActionValue;
 /**
  * 
  */
@@ -58,11 +59,21 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-protected:
+	virtual void InitializePlayerInput(UInputComponent* PlayerInputComponent);
+
+	void Input_Move(const FInputActionValue& InputActionValue);
+	void Input_LookMouse(const FInputActionValue& InputActionValue);
+	void Input_LookStick(const FInputActionValue& InputActionValue);
+
+	
 
 	TSubclassOf<UOFYCameraMode> DetermineCameraMode() const;
 
 protected:
+
+	UPROPERTY(EditAnywhere)
+	TArray<FMappableConfigPair> DefaultInputConfigs;
+	
 	/** Camera mode set by an ability. */
 	UPROPERTY()
 	TSubclassOf<UOFYCameraMode> AbilityCameraMode;

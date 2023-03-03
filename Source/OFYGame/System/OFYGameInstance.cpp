@@ -10,6 +10,7 @@
 //#include "LyraGameplayTags.h"
 #include "Misc/AssertionMacros.h"
 //#include "Player/LyraPlayerController.h"
+#include "OFYGamePlayTags.h"
 #include "Templates/Casts.h"
 #include "Engine/LocalPlayer.h"
 
@@ -34,15 +35,15 @@ void UOFYGameInstance::Init()
 	Super::Init();
 	UGameFrameworkComponentManager* ComponentManager = GetSubsystem<UGameFrameworkComponentManager>(this);
 
-	// if (ensure(ComponentManager))
-	// {
-	// 	const FLyraGameplayTags& GameplayTags = FLyraGameplayTags::Get();
-	//
-	// 	ComponentManager->RegisterInitState(GameplayTags.InitState_Spawned, false, FGameplayTag());
-	// 	ComponentManager->RegisterInitState(GameplayTags.InitState_DataAvailable, false, GameplayTags.InitState_Spawned);
-	// 	ComponentManager->RegisterInitState(GameplayTags.InitState_DataInitialized, false, GameplayTags.InitState_DataAvailable);
-	// 	ComponentManager->RegisterInitState(GameplayTags.InitState_GameplayReady, false, GameplayTags.InitState_DataInitialized);
-	// }
+	if (ensure(ComponentManager))
+	{
+		const FOFYGameplayTags& GameplayTags = FOFYGameplayTags::Get();
+	
+		ComponentManager->RegisterInitState(GameplayTags.InitState_Spawned, false, FGameplayTag());
+		ComponentManager->RegisterInitState(GameplayTags.InitState_DataAvailable, false, GameplayTags.InitState_Spawned);
+		ComponentManager->RegisterInitState(GameplayTags.InitState_DataInitialized, false, GameplayTags.InitState_DataAvailable);
+		ComponentManager->RegisterInitState(GameplayTags.InitState_GameplayReady, false, GameplayTags.InitState_DataInitialized);
+	}
 }
 
 void UOFYGameInstance::Shutdown()

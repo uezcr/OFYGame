@@ -8,7 +8,7 @@
 #include "OFYAssetManager.generated.h"
 
 class UOFYPawnData;
-
+struct FOFYAssetManagerStartupJob;
 struct FOFYBundles
 {
 	static const FName Equipped;
@@ -78,12 +78,14 @@ protected:
 private:
 	// Flushes the StartupJobs array. Processes all startup work.
 	void DoAllStartupJobs();
+
+	void InitializeAbilitySystem();
 	
 	// Called periodically during loads, could be used to feed the status to a loading screen
 	void UpdateInitialGameContentLoadPercent(float GameContentPercent);
 	
 	// The list of tasks to execute on startup. Used to track startup progress.
-	//TODO TArray<FOFYAssetManagerStartupJob> StartupJobs;
+	TArray<FOFYAssetManagerStartupJob> StartupJobs;
 	
 private:
 	

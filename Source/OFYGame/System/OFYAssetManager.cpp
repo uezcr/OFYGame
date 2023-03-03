@@ -3,6 +3,8 @@
 
 #include "OFYAssetManager.h"
 
+#include "OFYAssetManagerStartupJob.h"
+#include "OFYGamePlayTags.h"
 #include "Engine/Engine.h"
 #include "Character/OFYPawnData.h"
 #include "Misc/ScopedSlowTask.h"
@@ -23,7 +25,7 @@ static FAutoConsoleCommand CVarDumpLoadedAssets(
 
 //////////////////////////////////////////////////////////////////////
 
-#define STARTUP_JOB_WEIGHTED(JobFunc, JobWeight) StartupJobs.Add(FLyraAssetManagerStartupJob(#JobFunc, [this](const FOFYAssetManagerStartupJob& StartupJob, TSharedPtr<FStreamableHandle>& LoadHandle){JobFunc;}, JobWeight))
+#define STARTUP_JOB_WEIGHTED(JobFunc, JobWeight) StartupJobs.Add(FOFYAssetManagerStartupJob(#JobFunc, [this](const FOFYAssetManagerStartupJob& StartupJob, TSharedPtr<FStreamableHandle>& LoadHandle){JobFunc;}, JobWeight))
 #define STARTUP_JOB(JobFunc) STARTUP_JOB_WEIGHTED(JobFunc, 1.f)
 
 //////////////////////////////////////////////////////////////////////
@@ -103,12 +105,12 @@ void UOFYAssetManager::AddLoadedAsset(const UObject* Asset)
 
 void UOFYAssetManager::StartInitialLoading()
 {
-	SCOPED_BOOT_TIMING("ULyraAssetManager::StartInitialLoading");
+	SCOPED_BOOT_TIMING("UOFYAssetManager::StartInitialLoading");
 
 	// This does all of the scanning, need to do this now even if loads are deferred
 	Super::StartInitialLoading();
 
-	//TODO STARTUP_JOB(InitializeAbilitySystem());
+	STARTUP_JOB(InitializeAbilitySystem());
 	//TODO STARTUP_JOB(InitializeGameplayCueManager());
 
 	{
@@ -129,7 +131,7 @@ UPrimaryDataAsset* UOFYAssetManager::LoadGameDataOfClass(TSubclassOf<UPrimaryDat
 	if (!DataClassPath.IsNull())
 	{
 #if WITH_EDITOR
-		FScopedSlowTask SlowTask(0, FText::Format(NSLOCTEXT("LyraEditor", "BeginLoadingGameDataTask", "Loading GameData {0}"), FText::FromName(DataClass->GetFName())));
+		FScopedSlowTask SlowTask(0, FText::Format(NSLOCTEXT("OFYEditor", "BeginLoadingGameDataTask", "Loading GameData {0}"), FText::FromName(DataClass->GetFName())));
 		const bool bShowCancelButton = false;
 		const bool bAllowInPIE = true;
 		SlowTask.MakeDialog(bShowCancelButton, bAllowInPIE);
@@ -165,7 +167,6 @@ UPrimaryDataAsset* UOFYAssetManager::LoadGameDataOfClass(TSubclassOf<UPrimaryDat
 		// It is not acceptable to fail to load any GameData asset. It will result in soft failures that are hard to diagnose.
 		UE_LOG(LogTemp, Fatal, TEXT("Failed to load GameData asset at %s. Type %s. This is not recoverable and likely means you do not have the correct data to run %s."), *DataClassPath.ToString(), *PrimaryAssetType.ToString(), FApp::GetProjectName());
 	}
-
 	return Asset;
 }
 
@@ -174,53 +175,58 @@ void UOFYAssetManager::DoAllStartupJobs()
 	SCOPED_BOOT_TIMING("UOFYAssetManager::DoAllStartupJobs");
 	const double AllStartupJobsStartTime = FPlatformTime::Seconds();
 
-	// if (IsRunningDedicatedServer())
-	// {
-	// 	// No need for periodic progress updates, just run the jobs
-	// 	for (const FOFYAssetManagerStartupJob& StartupJob : StartupJobs)
-	// 	{
-	// 		StartupJob.DoJob();
-	// 	}
-	// }
-	// else
-	// {
-	// 	if (StartupJobs.Num() > 0)
-	// 	{
-	// 		float TotalJobValue = 0.0f;
-	// 		for (const FOFYAssetManagerStartupJob& StartupJob : StartupJobs)
-	// 		{
-	// 			TotalJobValue += StartupJob.JobWeight;
-	// 		}
-	//
-	// 		float AccumulatedJobValue = 0.0f;
-	// 		for (FOFYAssetManagerStartupJob& StartupJob : StartupJobs)
-	// 		{
-	// 			const float JobValue = StartupJob.JobWeight;
-	// 			StartupJob.SubstepProgressDelegate.BindLambda([This = this, AccumulatedJobValue, JobValue, TotalJobValue](float NewProgress)
-	// 				{
-	// 					const float SubstepAdjustment = FMath::Clamp(NewProgress, 0.0f, 1.0f) * JobValue;
-	// 					const float OverallPercentWithSubstep = (AccumulatedJobValue + SubstepAdjustment) / TotalJobValue;
-	//
-	// 					This->UpdateInitialGameContentLoadPercent(OverallPercentWithSubstep);
-	// 				});
-	//
-	// 			StartupJob.DoJob();
-	//
-	// 			StartupJob.SubstepProgressDelegate.Unbind();
-	//
-	// 			AccumulatedJobValue += JobValue;
-	//
-	// 			UpdateInitialGameContentLoadPercent(AccumulatedJobValue / TotalJobValue);
-	// 		}
-	// 	}
-	// 	else
-	// 	{
-	// 		UpdateInitialGameContentLoadPercent(1.0f);
-	// 	}
-	// }
-	//
-	// StartupJobs.Empty();
+	if (IsRunningDedicatedServer())
+	{
+		// No need for periodic progress updates, just run the jobs
+		for (const FOFYAssetManagerStartupJob& StartupJob : StartupJobs)
+		{
+			StartupJob.DoJob();
+		}
+	}
+	else
+	{
+		if (StartupJobs.Num() > 0)
+		{
+			float TotalJobValue = 0.0f;
+			for (const FOFYAssetManagerStartupJob& StartupJob : StartupJobs)
+			{
+				TotalJobValue += StartupJob.JobWeight;
+			}
+	
+			float AccumulatedJobValue = 0.0f;
+			for (FOFYAssetManagerStartupJob& StartupJob : StartupJobs)
+			{
+				const float JobValue = StartupJob.JobWeight;
+				StartupJob.SubstepProgressDelegate.BindLambda([This = this, AccumulatedJobValue, JobValue, TotalJobValue](float NewProgress)
+					{
+						const float SubstepAdjustment = FMath::Clamp(NewProgress, 0.0f, 1.0f) * JobValue;
+						const float OverallPercentWithSubstep = (AccumulatedJobValue + SubstepAdjustment) / TotalJobValue;
+	
+						This->UpdateInitialGameContentLoadPercent(OverallPercentWithSubstep);
+					});
+	
+				StartupJob.DoJob();
+	
+				StartupJob.SubstepProgressDelegate.Unbind();
+	
+				AccumulatedJobValue += JobValue;
+	
+				UpdateInitialGameContentLoadPercent(AccumulatedJobValue / TotalJobValue);
+			}
+		}
+		else
+		{
+			UpdateInitialGameContentLoadPercent(1.0f);
+		}
+	}
+	StartupJobs.Empty();
+}
 
+void UOFYAssetManager::InitializeAbilitySystem()
+{
+	SCOPED_BOOT_TIMING("UOFYAssetManager::InitializeAbilitySystem");
+
+	FOFYGameplayTags::InitializeNativeTags();
 }
 
 void UOFYAssetManager::UpdateInitialGameContentLoadPercent(float GameContentPercent)

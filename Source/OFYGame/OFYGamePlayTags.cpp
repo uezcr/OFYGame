@@ -15,6 +15,7 @@ FOFYGameplayTags FOFYGameplayTags::GameplayTags;
 
 void FOFYGameplayTags::InitializeNativeTags()
 {
+	GEngine->AddOnScreenDebugMessage(-1,10.f,FColor::Cyan,TEXT("SUCCESS00"));
 	UGameplayTagsManager& Manager = UGameplayTagsManager::Get();
 
 	GameplayTags.AddAllTags(Manager);

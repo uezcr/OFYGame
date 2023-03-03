@@ -46,6 +46,7 @@ void UOFYInputComponent::BindNativeAction(const UOFYInputConfig* InputConfig, co
 	check(InputConfig);
 	if(const UInputAction* IA = InputConfig->FindNativeInputActionForTag(InputTag, bLogIfNotFound))
 	{
+		GEngine->AddOnScreenDebugMessage(-1,10.f,FColor::Cyan,TEXT("Final"));
 		BindAction(IA,TriggerEvent,Object,Func);
 	}
 }

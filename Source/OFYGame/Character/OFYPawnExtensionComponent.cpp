@@ -90,6 +90,11 @@ void UOFYPawnExtensionComponent::HandleControllerChanged()
 	CheckDefaultInitialization();
 }
 
+void UOFYPawnExtensionComponent::SetupPlayerInputComponent()
+{
+	CheckDefaultInitialization();
+}
+
 void UOFYPawnExtensionComponent::OnRep_PawnData()
 {
 	CheckDefaultInitialization();

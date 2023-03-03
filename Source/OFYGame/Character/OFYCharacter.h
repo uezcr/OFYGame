@@ -26,6 +26,9 @@ public:
 
 protected:
 	virtual void PossessedBy(AController* NewController) override;
+	virtual void BeginPlay() override;
+
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Lyra|Character", Meta = (AllowPrivateAccess = "true"))
@@ -33,5 +36,4 @@ private:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly,Category="OFY|Character",Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UOFYCameraComponent> CameraComponent;
-	
 };

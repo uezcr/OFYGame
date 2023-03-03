@@ -3,16 +3,23 @@
 
 #include "Character/OFYHeroComponent.h"
 
-#include "OFYGamePlayTags.h"
-#include "OFYPawnData.h"
-#include "OFYPawnExtensionComponent.h"
-#include "Camera/OFYCameraComponent.h"
-#include "Camera/OFYCameraMode.h"
-#include "Components/GameFrameworkComponentManager.h"
-#include "Input/OFYInputComponent.h"
-#include "Misc/UObjectToken.h"
+#include "EnhancedInputSubsystems.h"
+#include "EnhancedInputSubsystems.h"
+#include "Player/OFYLocalPlayer.h"
 #include "Player/OFYPlayerController.h"
 #include "Player/OFYPlayerState.h"
+#include "OFYPawnExtensionComponent.h"
+#include "OFYGamePlayTags.h"
+#include "OFYPawnData.h"
+#include "Camera/OFYCameraComponent.h"
+#include "Camera/OFYCameraMode.h"
+#include "Engine/LocalPlayer.h"
+#include "Settings/OFYSettingsLocal.h"
+#include "Components/GameFrameworkComponentManager.h"
+#include "Input/OFYInputComponent.h"
+#include "Input/OFYInputConfig.h"
+#include "Misc/UObjectToken.h"
+#include "PlayerMappableInputConfig.h"
 
 namespace OFYHero
 {
@@ -192,7 +199,7 @@ void UOFYHeroComponent::HandleChangeInitState(UGameFrameworkComponentManager* Ma
 		{
 			if (Pawn->InputComponent != nullptr)
 			{
-				//TODO InitializePlayerInput(Pawn->InputComponent);
+				InitializePlayerInput(Pawn->InputComponent);
 			}
 		}
 		if (bIsLocallyControlled && PawnData)
@@ -243,6 +250,132 @@ void UOFYHeroComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	UnregisterInitStateFeature();
 	Super::EndPlay(EndPlayReason);
+}
+
+void UOFYHeroComponent::InitializePlayerInput(UInputComponent* PlayerInputComponent)
+{
+	check(PlayerInputComponent);
+	const APawn* Pawn = GetPawn<APawn>();
+	if(!Pawn)
+	{
+		return;
+	}
+
+	const APlayerController* PC = GetController<APlayerController>();
+	check(PC);
+
+	const UOFYLocalPlayer* LP = Cast<UOFYLocalPlayer>(PC->GetLocalPlayer());
+	check(LP);
+
+	UEnhancedInputLocalPlayerSubsystem* Subsystem = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
+	check(Subsystem);
+
+	Subsystem->ClearAllMappings();
+
+	if(const UOFYPawnExtensionComponent* PawnExtComp = UOFYPawnExtensionComponent::FindPawnExtensionComponent(Pawn))
+	{
+		if(const UOFYPawnData* PawnData = PawnExtComp->GetPawnData<UOFYPawnData>())
+		{
+			if(const UOFYInputConfig* InputConfig = PawnData->InputConfig)
+			{
+				const FOFYGameplayTags& GameplayTags = FOFYGameplayTags::Get();
+
+				for(const FMappableConfigPair& Pair : DefaultInputConfigs)
+				{
+					if(Pair.bShouldActivateAutomatically&&Pair.CanBeActivated())
+					{
+						FModifyContextOptions Options={};
+						Options.bIgnoreAllPressedKeysUntilRelease = false;
+						Subsystem->AddPlayerMappableConfig(Pair.Config.LoadSynchronous(),Options);
+					}
+				}
+				UOFYInputComponent* OFYIC = CastChecked<UOFYInputComponent>(PlayerInputComponent);
+				OFYIC->AddInputMappings(InputConfig,Subsystem);
+				OFYIC->BindNativeAction(InputConfig,GameplayTags.InputTag_Move, ETriggerEvent::Triggered, this, &ThisClass::Input_Move, /*bLogIfNotFound=*/ false);
+				OFYIC->BindNativeAction(InputConfig, GameplayTags.InputTag_Look_Mouse, ETriggerEvent::Triggered, this, &ThisClass::Input_LookMouse, /*bLogIfNotFound=*/ false);
+			}
+		}
+	}
+	if (ensure(!bReadyToBindInputs))
+	{
+		bReadyToBindInputs = true;
+	}
+	UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(const_cast<APlayerController*>(PC), NAME_BindInputsNow);
+	UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(const_cast<APawn*>(Pawn), NAME_BindInputsNow);
+}
+
+void UOFYHeroComponent::Input_Move(const FInputActionValue& InputActionValue)
+{
+	APawn* Pawn = GetPawn<APawn>();
+	AController* Controller = Pawn ? Pawn->GetController():nullptr;
+	if(AOFYPlayerController* OFYController = Cast<AOFYPlayerController>(Controller))
+	{
+		//TODO AutoRun
+	}
+	if(Controller)
+	{
+		const FVector2D Value = InputActionValue.Get<FVector2D>();
+		const FRotator MovementRotation(0.0f,Controller->GetControlRotation().Yaw,0.0f);
+		
+		if (Value.X != 0.0f)
+		{
+			const FVector MovementDirection = MovementRotation.RotateVector(FVector::RightVector);
+			Pawn->AddMovementInput(MovementDirection, Value.X);
+		}
+
+		if (Value.Y != 0.0f)
+		{
+			const FVector MovementDirection = MovementRotation.RotateVector(FVector::ForwardVector);
+			Pawn->AddMovementInput(MovementDirection, Value.Y);
+		}
+	}
+}
+
+void UOFYHeroComponent::Input_LookMouse(const FInputActionValue& InputActionValue)
+{
+	APawn* Pawn = GetPawn<APawn>();
+
+	if (!Pawn)
+	{
+		return;
+	}
+	
+	const FVector2D Value = InputActionValue.Get<FVector2D>();
+
+	if (Value.X != 0.0f)
+	{
+		Pawn->AddControllerYawInput(Value.X);
+	}
+
+	if (Value.Y != 0.0f)
+	{
+		Pawn->AddControllerPitchInput(Value.Y);
+	}
+}
+
+void UOFYHeroComponent::Input_LookStick(const FInputActionValue& InputActionValue)
+{
+	APawn* Pawn = GetPawn<APawn>();
+
+	if (!Pawn)
+	{
+		return;
+	}
+	
+	const FVector2D Value = InputActionValue.Get<FVector2D>();
+
+	const UWorld* World = GetWorld();
+	check(World);
+
+	if (Value.X != 0.0f)
+	{
+		Pawn->AddControllerYawInput(Value.X * OFYHero::LookYawRate * World->GetDeltaSeconds());
+	}
+	
+	if (Value.Y != 0.0f)
+	{
+		Pawn->AddControllerPitchInput(Value.Y * OFYHero::LookPitchRate * World->GetDeltaSeconds());
+	}
 }
 
 TSubclassOf<UOFYCameraMode> UOFYHeroComponent::DetermineCameraMode() const
