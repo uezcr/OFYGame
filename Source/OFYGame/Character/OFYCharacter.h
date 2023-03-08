@@ -2,7 +2,9 @@
 
 #pragma once
 
+
 #include "ModularCharacter.h"
+
 #include "OFYCharacter.generated.h"
 
 class AActor;
@@ -37,3 +39,6 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly,Category="OFY|Character",Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UOFYCameraComponent> CameraComponent;
 };
+
+
+

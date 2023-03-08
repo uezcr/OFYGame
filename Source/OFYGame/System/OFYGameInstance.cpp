@@ -38,7 +38,7 @@ void UOFYGameInstance::Init()
 	if (ensure(ComponentManager))
 	{
 		const FOFYGameplayTags& GameplayTags = FOFYGameplayTags::Get();
-	
+		/** 添加新的全局Actor特征状态，可以在现有的状态之前或之后。这通常会在游戏全局或游戏特征初始化时被调用 */
 		ComponentManager->RegisterInitState(GameplayTags.InitState_Spawned, false, FGameplayTag());
 		ComponentManager->RegisterInitState(GameplayTags.InitState_DataAvailable, false, GameplayTags.InitState_Spawned);
 		ComponentManager->RegisterInitState(GameplayTags.InitState_DataInitialized, false, GameplayTags.InitState_DataAvailable);

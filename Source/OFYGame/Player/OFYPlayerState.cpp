@@ -8,6 +8,9 @@
 AOFYPlayerState::AOFYPlayerState(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
+
+	TArray<AActor*> vv;
+	vv.SetNum(12,false);
 }
 
 void AOFYPlayerState::OnRep_PawnData()

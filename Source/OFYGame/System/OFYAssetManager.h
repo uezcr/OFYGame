@@ -5,16 +5,24 @@
 #include "CoreMinimal.h"
 #include "Engine/AssetManager.h"
 #include "Engine/DataAsset.h"
+#include "OFYAssetManagerStartupJob.h"
+
 #include "OFYAssetManager.generated.h"
 
+class UOFYGameData;
 class UOFYPawnData;
-struct FOFYAssetManagerStartupJob;
+
 struct FOFYBundles
 {
 	static const FName Equipped;
 };
+
 /**
- * 
+ * UOFYAssetManager
+ *
+ * 资产管理器的游戏实现，重写功能并存储游戏特定的类型。
+ * 预计大多数游戏都想覆盖AssetManager，因为它为游戏特定的加载逻辑提供了一个好地方。
+ * 这个类是通过在DefaultEngine.ini中设置'AssetManagerClassName'来使用。
  */
 UCLASS(Config = Game)
 class UOFYAssetManager : public UAssetManager
@@ -23,19 +31,21 @@ class UOFYAssetManager : public UAssetManager
 public:
 	UOFYAssetManager();
 
+	// 返回AssetManager单例对象。
 	static UOFYAssetManager& Get();
 
-	// Returns the asset referenced by a TSoftObjectPtr.  This will synchronously load the asset if it's not already loaded.
+	// 返回由TSoftObjectPtr引用的资产，如果资产还没有被加载，这将同步加载它。
 	template<typename AssetType>
 	static AssetType* GetAsset(const TSoftObjectPtr<AssetType>& AssetPointer, bool bKeepInMemory = true);
 
-	// Returns the subclass referenced by a TSoftClassPtr.  This will synchronously load the asset if it's not already loaded.
+	// 返回TSoftClassPtr所引用的子类，如果资产还没有被加载，这将同步加载它。
 	template<typename AssetType>
 	static TSubclassOf<AssetType> GetSubclass(const TSoftClassPtr<AssetType>& AssetPointer, bool bKeepInMemory = true);
 	
-	// Logs all assets currently loaded and tracked by the asset manager.
+	// 记录当前加载的所有资产，并由资产管理器跟踪。
 	static void DumpLoadedAssets();
 
+	const UOFYGameData& GetGameData();
 	const UOFYPawnData* GetDefaultPawnData() const;
 
 protected:
@@ -52,10 +62,11 @@ protected:
 	}
 
 
+	// 同步加载资产。
 	static UObject* SynchronousLoadAsset(const FSoftObjectPath& AssetPath);
 	static bool ShouldLogAssetLoads();
 
-	// Thread safe way of adding a loaded asset to keep in memory.
+	// 以线程安全的方式添加一个已加载的资产以保留在内存中。
 	void AddLoadedAsset(const UObject* Asset);
 
 	//~UAssetManager interface
@@ -66,34 +77,37 @@ protected:
 
 protected:
 	
+	// Global game data asset to use.
+	UPROPERTY(Config)
+	TSoftObjectPtr<UOFYGameData> OFYGameDataPath;
+	
 	// Loaded version of the game data
 	UPROPERTY(Transient)
 	TMap<TObjectPtr<UClass>, TObjectPtr<UPrimaryDataAsset>> GameDataMap;
 	
-	// 如果在PlayerState上没有设置玩家Pawn，在生成玩家Pawn时使用的Pawn数据
+	// 如果在PlayerState上没有设置玩家PawnData，在生成玩家Pawn时使用的PawnData
 	UPROPERTY(Config)
 	TSoftObjectPtr<UOFYPawnData> DefaultPawnData;
 
-
 private:
-	// Flushes the StartupJobs array. Processes all startup work.
+	// 刷新StartupJobs数组，处理所有的启动工作。
 	void DoAllStartupJobs();
 
 	void InitializeAbilitySystem();
 	
-	// Called periodically during loads, could be used to feed the status to a loading screen
+	// 在加载过程中定期调用，可用于向加载屏幕提供状态。
 	void UpdateInitialGameContentLoadPercent(float GameContentPercent);
 	
-	// The list of tasks to execute on startup. Used to track startup progress.
+	// 启动时要执行的任务列表。用来跟踪启动进度。
 	TArray<FOFYAssetManagerStartupJob> StartupJobs;
 	
 private:
 	
-	// Assets loaded and tracked by the asset manager.
+	// 资产管理器加载和跟踪的资产。
 	UPROPERTY()
 	TSet<TObjectPtr<const UObject>> LoadedAssets;
 
-	// Used for a scope lock when modifying the list of load assets.
+	// 在修改加载资产列表时用于范围锁定。
 	FCriticalSection LoadedAssetsCritical;
 	
 };

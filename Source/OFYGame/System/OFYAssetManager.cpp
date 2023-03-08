@@ -3,12 +3,13 @@
 
 #include "OFYAssetManager.h"
 
-#include "OFYAssetManagerStartupJob.h"
 #include "OFYGamePlayTags.h"
 #include "Engine/Engine.h"
 #include "Character/OFYPawnData.h"
 #include "Misc/ScopedSlowTask.h"
 #include "Stats/StatsMisc.h"
+#include "OFYGameData.h"
+#include "OFYLogChannels.h"
 
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(OFYAssetManager)
@@ -58,6 +59,11 @@ void UOFYAssetManager::DumpLoadedAssets()
 
 	UE_LOG(LogTemp, Log, TEXT("... %d assets in loaded pool"), Get().LoadedAssets.Num());
 	UE_LOG(LogTemp, Log, TEXT("========== Finish Dumping Loaded Assets =========="));
+}
+
+const UOFYGameData& UOFYAssetManager::GetGameData()
+{
+	return GetOrLoadTypedGameData<UOFYGameData>(OFYGameDataPath);
 }
 
 const UOFYPawnData* UOFYAssetManager::GetDefaultPawnData() const
@@ -114,8 +120,8 @@ void UOFYAssetManager::StartInitialLoading()
 	//TODO STARTUP_JOB(InitializeGameplayCueManager());
 
 	{
-		// Load base game data asset
-		//TODO STARTUP_JOB_WEIGHTED(GetGameData(), 25.f);
+		 //Load base game data asset
+		STARTUP_JOB_WEIGHTED(GetGameData(), 25.f);
 	}
 
 	// Run all the queued up startup jobs
@@ -136,7 +142,7 @@ UPrimaryDataAsset* UOFYAssetManager::LoadGameDataOfClass(TSubclassOf<UPrimaryDat
 		const bool bAllowInPIE = true;
 		SlowTask.MakeDialog(bShowCancelButton, bAllowInPIE);
 #endif
-		UE_LOG(LogTemp, Log, TEXT("Loading GameData: %s ..."), *DataClassPath.ToString());
+		UE_LOG(LogOFY, Log, TEXT("Loading GameData: %s ..."), *DataClassPath.ToString());
 		SCOPE_LOG_TIME_IN_SECONDS(TEXT("    ... GameData loaded!"), nullptr);
 
 		// This can be called recursively in the editor because it is called on demand from PostLoad so force a sync load for primary asset and async load the rest in that case
@@ -165,7 +171,7 @@ UPrimaryDataAsset* UOFYAssetManager::LoadGameDataOfClass(TSubclassOf<UPrimaryDat
 	else
 	{
 		// It is not acceptable to fail to load any GameData asset. It will result in soft failures that are hard to diagnose.
-		UE_LOG(LogTemp, Fatal, TEXT("Failed to load GameData asset at %s. Type %s. This is not recoverable and likely means you do not have the correct data to run %s."), *DataClassPath.ToString(), *PrimaryAssetType.ToString(), FApp::GetProjectName());
+		UE_LOG(LogOFY, Fatal, TEXT("Failed to load GameData asset at %s. Type %s. This is not recoverable and likely means you do not have the correct data to run %s."), *DataClassPath.ToString(), *PrimaryAssetType.ToString(), FApp::GetProjectName());
 	}
 	return Asset;
 }

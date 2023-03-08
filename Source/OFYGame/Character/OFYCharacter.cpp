@@ -13,12 +13,6 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(OFYCharacter)
 
-const double testx1 = 25.225859669;
-const double testy1 = 103.401097565;
-
-const double testx2 = 25.225859690;
-const double testy2 = 103.401097567;
-
 AOFYCharacter::AOFYCharacter(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
