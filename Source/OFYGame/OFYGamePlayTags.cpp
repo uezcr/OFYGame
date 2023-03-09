@@ -6,6 +6,7 @@
 #include "Containers/Array.h"
 #include "Engine/EngineTypes.h"
 #include "GameplayTagsManager.h"
+#include "OFYLogChannels.h"
 #include "Logging/LogCategory.h"
 #include "Logging/LogMacros.h"
 #include "Trace/Detail/Channel.h"
@@ -92,6 +93,7 @@ void FOFYGameplayTags::AddAllTags(UGameplayTagsManager& Manager)
 	AddMovementModeTag(Movement_Mode_Swimming, "Movement.Mode.Swimming", MOVE_Swimming);
 	AddMovementModeTag(Movement_Mode_Flying, "Movement.Mode.Flying", MOVE_Flying);
 	AddMovementModeTag(Movement_Mode_Custom, "Movement.Mode.Custom", MOVE_Custom);
+	UE_LOG(LogOFY,Display,TEXT("Add all Tags Complete "));
 }
 
 void FOFYGameplayTags::AddTag(FGameplayTag& OutTag, const ANSICHAR* TagName, const ANSICHAR* TagComment)
