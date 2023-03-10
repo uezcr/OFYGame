@@ -26,8 +26,8 @@ class UOFYExperienceDefinition;
 /**
  * 
  */
-UCLASS()
-class OFYGAME_API UOFYFrontendStateComponent : public UGameStateComponent, public ILoadingProcessInterface
+UCLASS(Abstract)
+class UOFYFrontendStateComponent : public UGameStateComponent, public ILoadingProcessInterface
 {
 	GENERATED_BODY()
 public:

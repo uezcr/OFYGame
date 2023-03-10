@@ -84,7 +84,7 @@ public:
 				ActivatableWidgetT* Widget = PushWidgetToLayerStack<ActivatableWidgetT>(LayerName, ActivatableWidgetClass.Get(), [StateFunc](ActivatableWidgetT& WidgetToInit) {
 					StateFunc(EAsyncWidgetLayerState::Initialize, &WidgetToInit);
 				});
-
+				
 				StateFunc(EAsyncWidgetLayerState::AfterPush, Widget);
 			})
 		);

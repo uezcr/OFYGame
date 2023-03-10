@@ -32,7 +32,7 @@
 namespace FrontendTags
 {
 	UE_DEFINE_GAMEPLAY_TAG_STATIC(TAG_PLATFORM_TRAIT_SINGLEONLINEUSER, "Platform.Trait.SingleOnlineUser");
-	UE_DEFINE_GAMEPLAY_TAG_STATIC(TAG_UI_LAYER_MENU, "UI.OFY.Menu");
+	UE_DEFINE_GAMEPLAY_TAG_STATIC(TAG_UI_LAYER_MENU, "UI.Layer.Menu");
 }
 
 UOFYFrontendStateComponent::UOFYFrontendStateComponent(const FObjectInitializer& ObjectInitializer)
@@ -185,7 +185,7 @@ void UOFYFrontendStateComponent::FlowStep_TryShowPressStartScreen(FControlFlowNo
 			{
 			case EAsyncWidgetLayerState::AfterPush:
 				bShouldShowLoadingScreen = false;
-				Screen->OnDeactivated().AddWeakLambda(this, [this, SubFlow]() {
+					Screen->OnDeactivated().AddWeakLambda(this, [this, SubFlow]() {
 					SubFlow->ContinueFlow();
 				});
 				break;
@@ -239,6 +239,7 @@ void UOFYFrontendStateComponent::FlowStep_TryShowMainScreen(FControlFlowNodeRef 
 	if (UPrimaryGameLayout* RootLayout = UPrimaryGameLayout::GetPrimaryGameLayoutForPrimaryPlayer(this))
 	{
 		constexpr bool bSuspendInputUntilComplete = true;
+		
 		RootLayout->PushWidgetToLayerStackAsync<UCommonActivatableWidget>(FrontendTags::TAG_UI_LAYER_MENU, bSuspendInputUntilComplete, MainScreenClass,
 			[this, SubFlow](EAsyncWidgetLayerState State, UCommonActivatableWidget* Screen) {
 			switch (State)
