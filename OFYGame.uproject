@@ -70,6 +70,10 @@
 		{
 			"Name": "GameSubtitles",
 			"Enabled": true
+		},
+		{
+			"Name": "OFYMaps",
+			"Enabled": true
 		}
 	]
 }
